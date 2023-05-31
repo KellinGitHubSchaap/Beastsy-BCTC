@@ -1,0 +1,1 @@
+Because I am making a framework project in C++, I needed to make sure that I was able to create bitmaps. And since I don't like to convert .bmp's on sketchy websites and don't know what data I'll get I  quickly wrote my own.
