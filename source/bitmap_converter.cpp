@@ -1,112 +1,122 @@
-#include "../include/bitmap_converter.hpp"
+#include "bitmap_converter.h"
 
-std::ofstream outfile;
-
-void ConvertBitmap(const char *filename, const char* outputFilename)
+void ConvertBitmap(String^ filename, const char* outputFilename)
 {
-    std::string outputFolderPath = "output/";
-    std::filesystem::create_directory(outputFolderPath);
+    Bitmap ieks;
 
-    outfile.open(outputFolderPath + std::string(outputFilename) + ".h");
+    String^ outputFolderPath = "output/";
+    Directory::CreateDirectory(outputFolderPath);
 
-    Bitmap bitmap = ReadBitmap(filename);
-    bitmap.filename = std::string(outputFilename);
+    ieks.outfile = gcnew StreamWriter(outputFolderPath + gcnew String(outputFilename) + ".h");
+
+    Bitmap^ bitmap = ReadBitmap(filename);
+    bitmap->filename = gcnew String(outputFilename);
 
     ConvertBitmapToCArray(bitmap);
     ConvertPaletteToCArray(bitmap);
 
-    std::cout << "Bitmap converted to C array.\n";
+    Console::WriteLine("Bitmap converted to C array.");
 
-    outfile << "#endif // BITMAP_DATA_H\n";
-    outfile.close();
+    ieks.outfile->WriteLine("#endif // BITMAP_DATA_H");
+    ieks.outfile->Close();
 
-    delete[] bitmap.data;
+    delete[] bitmap->data;
 }
 
-Bitmap ReadBitmap(const char *filename)
+Bitmap^ ReadBitmap(String^ filename)
 {
-    Bitmap bitmap;
+    Bitmap^ bitmap = gcnew Bitmap();
 
-    std::ifstream file(std::string(filename) + ".bmp", std::ios::binary);
+    FileStream^ file = gcnew FileStream(gcnew String(filename), FileMode::Open, FileAccess::Read);
 
     // Read the bitmap header information
-    file.seekg(18, std::ios::beg); // Skip the header to reach the width and height
-    file.read(reinterpret_cast<char *>(&bitmap.width), sizeof(bitmap.width));
-    file.read(reinterpret_cast<char *>(&bitmap.height), sizeof(bitmap.height));
+    file->Seek(18, SeekOrigin::Begin); // Skip the header to reach the width and height
+    array<unsigned char>^ widthBytes = gcnew array<unsigned char>(4);
+    array<unsigned char>^ heightBytes = gcnew array<unsigned char>(4);
+    file->Read(widthBytes, 0, 4);
+    file->Read(heightBytes, 0, 4);
+    bitmap->width = BitConverter::ToInt32(widthBytes, 0);
+    bitmap->height = BitConverter::ToInt32(heightBytes, 0);
 
     // Allocate memory for the pixel data
-    bitmap.data = new unsigned char[bitmap.width * bitmap.height * 3];
+    bitmap->data = gcnew array<unsigned char>(bitmap->width * bitmap->height * 3);
 
     // Read the pixel data
-    file.seekg(54, std::ios::beg); // Skip the header and color table
-    file.read(reinterpret_cast<char *>(bitmap.data), bitmap.width * bitmap.height * 3);
+    file->Seek(54, SeekOrigin::Begin); // Skip the header and color table
+    file->Read(bitmap->data, 0, bitmap->width * bitmap->height * 3);
 
-    file.close();
+    file->Close();
 
     return bitmap;
 }
 
-void ConvertBitmapToCArray(const Bitmap &bitmap)
+void ConvertBitmapToCArray(Bitmap^ bitmap)
 {
-    outfile << "#ifndef BITMAP_DATA_H\n";
-    outfile << "#define BITMAP_DATA_H\n\n";
-    outfile << "const unsigned int " + bitmap.filename + "MapData[] = {\n\t";
+    Bitmap::outfile->WriteLine("#ifndef BITMAP_DATA_H");
+    Bitmap::outfile->WriteLine("#define BITMAP_DATA_H\n");
+    Bitmap::outfile->WriteLine("const unsigned int " + bitmap->filename + "MapData[] = {\t");
 
     int count = 0;
-    for (int i = 0; i < bitmap.width * bitmap.height * 3; i += 3)
+    for (int i = 0; i < bitmap->width * bitmap->height * 3; i += 3)
     {
-        unsigned char r = bitmap.data[i + 2];
-        unsigned char g = bitmap.data[i + 1];
-        unsigned char b = bitmap.data[i];
+        unsigned char r = bitmap->data[i + 2];
+        unsigned char g = bitmap->data[i + 1];
+        unsigned char b = bitmap->data[i];
 
         // Convert RGB to hex format
-        outfile << "0x" << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(r);
-        outfile << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(g);
-        outfile << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(b) << ", ";
+        Bitmap::outfile->Write("0x" + r.ToString("X2") + g.ToString("X2") + b.ToString("X2") + ", ");
 
         count++;
         if (count == 16)
         {
-            outfile << "\n\t";
+            Bitmap::outfile->WriteLine();
+            Bitmap::outfile->Write("\t");
             count = 0;
         }
     }
 
-    outfile << "\n};\n\n";
+    Bitmap::outfile->WriteLine();
+    Bitmap::outfile->WriteLine("};\n");
 }
 
-void ConvertPaletteToCArray(const Bitmap& bitmap)
+void ConvertPaletteToCArray(Bitmap^ bitmap)
 {
-    std::vector<std::string> palette;
-    std::set<std::string> uniqueColors;
+    List<String^>^ palette = gcnew List<String^>();
+    Dictionary<String^, int>^ uniqueColors = gcnew Dictionary<String^, int>(); // Using Dictionary to store unique colors
 
-    for (int i = 0; i < bitmap.width * bitmap.height * 3; i += 3)
+    for (int i = 0; i < bitmap->width * bitmap->height * 3; i += 3)
     {
-        unsigned char r = bitmap.data[i + 2];
-        unsigned char g = bitmap.data[i + 1];
-        unsigned char b = bitmap.data[i];
+        unsigned char r = bitmap->data[i + 2];
+        unsigned char g = bitmap->data[i + 1];
+        unsigned char b = bitmap->data[i];
 
         // Convert RGB to hex format
-        std::stringstream hexValue;
-        hexValue << "0x" << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(r);
-        hexValue << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(g);
-        hexValue << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(b);
+        String^ hexValue = "0x" + r.ToString("X2") + g.ToString("X2") + b.ToString("X2");
 
-        uniqueColors.insert(hexValue.str());
+        if (!uniqueColors->ContainsKey(hexValue)) // Check if color already exists in dictionary
+        {
+            uniqueColors->Add(hexValue, 0); // Add the color to the dictionary
+        }
     }
 
-    std::copy(uniqueColors.begin(), uniqueColors.end(), std::back_inserter(palette));
-    WritePaletteToHeader(palette, bitmap.filename);
+    // Copy unique colors from dictionary keys to list
+    for each (String ^ color in uniqueColors->Keys)
+    {
+        palette->Add(color);
+    }
+
+    WritePaletteToHeader(palette, bitmap->filename);
 }
 
-void WritePaletteToHeader(const std::vector<std::string>& palette, const std::string& filename)
+void WritePaletteToHeader(List<String^>^ palette, String^ filename)
 {
-    outfile << "const unsigned int " + filename + "Palette[] = {\n\t";
+    Bitmap::outfile->WriteLine("const unsigned int " + filename + "Palette[] = {");
 
-    for(const auto& color : palette)
+    for each (String ^ color in palette)
     {
-        outfile << color << ", ";
+        Bitmap::outfile->Write(color + ", ");
     }
 
-    outfile << "\n};\n\n";
+    Bitmap::outfile->WriteLine();
+    Bitmap::outfile->WriteLine("};\n");
 }

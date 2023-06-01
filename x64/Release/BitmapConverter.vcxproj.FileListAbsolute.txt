@@ -1,0 +1,4 @@
+D:\Folders\Projecten\20222023\C++\API Bitmap Converter\BitmapConverter\BitmapConverter\x64\Release\BitmapConverter.vcxproj.AssemblyReference.cache
+D:\Folders\Projecten\20222023\C++\API Bitmap Converter\BitmapConverter\BitmapConverter\x64\Release\BitmapConverter.vcxproj.SuggestedBindingRedirects.cache
+D:\Folders\Projecten\20222023\C++\API Bitmap Converter\BitmapConverter\BitmapConverter\x64\Release\BitmapConverter.Beastsy.resources
+D:\Folders\Projecten\20222023\C++\API Bitmap Converter\BitmapConverter\BitmapConverter\x64\Release\BitmapConverter.vcxproj.GenerateResource.cache
