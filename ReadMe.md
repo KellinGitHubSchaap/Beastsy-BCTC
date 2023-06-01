@@ -3,63 +3,16 @@ Because I am making a framework project in C++, I needed to make sure that I was
 And since I don't like to convert .bmp's on sketchy websites, of which I don't know what data I'll get when converting, I quickly wrote my own converter that will handle this for you (and me =P).
 
 What do you need to do!
-1. Make sure that G++ compiler is installed on your PC (and possibly have MSYS2 or any other terminal)
-2. Make sure that the MakeFile is in the `root` of your project as it will scan from there.
-3. (For now) the MakeFile will remain working as long as you don't add really strange headers or libraries to your project, as it wasnt meant to compile that.
-4. Open the main.cpp file and fill in main the following function call -> `ConvertBitmap(const char* filename, const char* outputFilename)`
-place the file path of your .bmp file into the first parameter starting from the `root` of your project and in the secondParameter you'd want to give the output name of your converted .bmp file.
-
-Here is an example:
-</p>
-
-```cpp
-#include "../include/bitmap_converter"
-
-int main()
-{
-	ConvertBitmap("assets/smiley", "differentSmiley");
-	return 0;
-}
-```
-
-<p>
-In your terminal make sure that its directory is set to the location of your projects MakeFile and fill in the command `make`.
-	
-After pressing enter your .exe will be made called `CPPExecute.exe`.
-	
-Double Click on it and if all went well you can now see a new map appear (or file) with your .bmp now as a .h (header).
-</p>
-
-```cpp
-#ifndef BITMAP_DATA_H
-#define BITMAP_DATA_H
-
-const unsigned int differentSmileyMapData[] = {
-	0xff00f6, 0xff00f6, 0xff00f6, 0xff00f6, 0xff00f6, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xff00f6, 0xff00f6, 0xff00f6, 0xff00f6, 0xff00f6, 
-	0xff00f6, 0xff00f6, 0xff00f6, 0x000000, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0x000000, 0xff00f6, 0xff00f6, 0xff00f6, 
-	0xff00f6, 0xff00f6, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0x000000, 0x000000, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xff00f6, 0xff00f6, 
-	0xff00f6, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xff00f6, 
-	0xff00f6, 0x000000, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0x000000, 0xff00f6, 
-	0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 
-	0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 
-	0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 
-	0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 
-	0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 
-	0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 
-	0xff00f6, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xff00f6, 
-	0xff00f6, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xff00f6, 
-	0xff00f6, 0xff00f6, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0xff00f6, 0xff00f6, 
-	0xff00f6, 0xff00f6, 0xff00f6, 0x000000, 0x000000, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0xffff00, 0x000000, 0x000000, 0xff00f6, 0xff00f6, 0xff00f6, 
-	0xff00f6, 0xff00f6, 0xff00f6, 0xff00f6, 0xff00f6, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xff00f6, 0xff00f6, 0xff00f6, 0xff00f6, 0xff00f6, 
-	
-};
-
-const unsigned int differentSmileyPalette[] = {
-	0x000000, 0xff00f6, 0xffff00, 
-};
-
-#endif // BITMAP_DATA_H
-```
+1. Open the Beastsy (BCTC or Bitmap Converter To C) program<br>
+	![image](https://github.com/KellinGitHubSchaap/Beastsy-BCTC/assets/78432932/aa3c83eb-7c67-4e6d-a9c0-9b34f938938f)
+2. Click on `Import`<br>
+	![image](https://github.com/KellinGitHubSchaap/Beastsy-BCTC/assets/78432932/1ef39a53-9dcc-41d3-9532-9a3ddcb3a059)
+3. Choose an image that you want to import (.bmp ONLY)<br>
+	![image](https://github.com/KellinGitHubSchaap/Beastsy-BCTC/assets/78432932/b854551e-e5f3-4cfe-9d0b-160a6eb37571)
+4. Once imported, click on `Convert`<br>
+	![image](https://github.com/KellinGitHubSchaap/Beastsy-BCTC/assets/78432932/886df18e-6c60-4bc2-8aaf-25b5f046bf86)
+5. If all went well you can now see a file appear on your `C:\Users\Desktop\` with your .bmp now as a .h (header).<br>
+	![image](https://github.com/KellinGitHubSchaap/Beastsy-BCTC/assets/78432932/158d0b5f-2839-431c-ae4e-03ebbcdc319a)
 
 Hopefully this helped a bit =)
 
