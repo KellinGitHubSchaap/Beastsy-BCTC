@@ -26,6 +26,7 @@
 - Make sure that the output location can be decided on by the user
 - Make the user be able to select a palette color that will become a transparent color
 - Make the user be able to see all the colors used within the .bmp image
+- User isn't notified the converting went OK, so a pop-up window needs to be added
 
 ## Issues / Bugs
 1. Converter can't convert to GBA values = 2 bytes = 5 bits per RGB channel = 15 bits per pixel
