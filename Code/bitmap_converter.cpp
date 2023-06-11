@@ -1,14 +1,13 @@
 #include "../BitmapConverter/include/bitmap_converter.h"
 
-void ConvertBitmap(String^ filename, String^ outputFilename)
+void ConvertBitmap(String^ filename, String^ outputFilePath, String^ outputFilename)
 {
     Bitmap outputHeaderFile;
 
-    String^ outputFolderPath = "C:\\Users\\" + Environment::UserName + "\\Desktop\\";
-    Directory::CreateDirectory(outputFolderPath);
-    Console::WriteLine("Output Path:" + outputFolderPath);
+    //String^ outputFolderPath = "C:\\Users\\" + Environment::UserName + "\\Desktop\\";
+    //Directory::CreateDirectory(outputFilePath);
 
-    outputHeaderFile.outfile = gcnew StreamWriter(outputFolderPath + gcnew String(outputFilename) + ".h");
+    outputHeaderFile.outfile = gcnew StreamWriter(outputFilePath);
 
     Bitmap^ bitmap = ReadBitmap(filename);
     bitmap->filename = gcnew String(outputFilename);
@@ -16,7 +15,10 @@ void ConvertBitmap(String^ filename, String^ outputFilename)
     ConvertBitmapToCArray(bitmap);
     ConvertPaletteToCArray(bitmap);
 
-    Console::WriteLine("Bitmap converted to C array.");
+    System::Windows::Forms::MessageBox::Show("Converting: " + outputFilename + ".bmp" + "\n" +
+                                             "To: " + outputFilename + ".h" + "\n" +
+                                             "Output Path: " + outputFilePath, "Result");
+
 
     outputHeaderFile.outfile->WriteLine("#endif // BITMAP_DATA_H");
     outputHeaderFile.outfile->Close();
@@ -24,6 +26,13 @@ void ConvertBitmap(String^ filename, String^ outputFilename)
     delete[] bitmap->data;
 }
 
+
+/// <summary>
+/// ReadBitmap will read the information of a given .bmp file and will return that information
+/// back as a Bitmap struct. 
+/// </summary>
+/// <param name="filename">File that will be read from (this must be a .bmp)</param>
+/// <returns>A Bitmap variable that has stored all the `filename` information</returns>
 Bitmap^ ReadBitmap(String^ filename)
 {
     Bitmap^ bitmap = gcnew Bitmap();
@@ -51,6 +60,13 @@ Bitmap^ ReadBitmap(String^ filename)
     return bitmap;
 }
 
+
+/// <summary>
+/// ConvertBitmapToCArray will, like the name suggests, convert the received bitmap information and turn it into C language code.
+/// It does this by reading out the RGB channel values from each stored pixel, and put them together into a 3 byte (24-bit) hexvalue.
+/// This will then be visible inside of the created file.
+/// </summary>
+/// <param name="bitmap">Information stored from the actual .bmp needs to go here</param>
 void ConvertBitmapToCArray(Bitmap^ bitmap)
 {
     Bitmap::outfile->WriteLine("#ifndef BITMAP_DATA_H");
@@ -80,6 +96,11 @@ void ConvertBitmapToCArray(Bitmap^ bitmap)
     Bitmap::outfile->WriteLine("};\n");
 }
 
+/// <summary>
+/// ConvertPaletteToCArray does the same thing as ConvertBitmapToCArray. Only difference being that I want to know what
+/// colors were used throughout the image, instead of every pixel.
+/// </summary>
+/// <param name="bitmap">Information stored from the actual .bmp needs to go here</param>
 void ConvertPaletteToCArray(Bitmap^ bitmap)
 {
     List<String^>^ palette = gcnew List<String^>();
@@ -109,6 +130,11 @@ void ConvertPaletteToCArray(Bitmap^ bitmap)
     WritePaletteToHeader(palette, bitmap->filename);
 }
 
+/// <summary>
+/// WritePaletteToHeader will write the gained palette information to the output file in a separate array.
+/// </summary>
+/// <param name="palette">The list of colors that were used in the image</param>
+/// <param name="filename">The filename is needed to make the file more dynamic in naming variables</param>
 void WritePaletteToHeader(List<String^>^ palette, String^ filename)
 {
     Bitmap::outfile->WriteLine("const unsigned int " + filename + "Palette[] = {");
@@ -121,3 +147,4 @@ void WritePaletteToHeader(List<String^>^ palette, String^ filename)
     Bitmap::outfile->WriteLine();
     Bitmap::outfile->WriteLine("};\n");
 }
+

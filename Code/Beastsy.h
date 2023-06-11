@@ -25,6 +25,8 @@ namespace BitmapConverter {
 	private: System::Windows::Forms::ToolStripMenuItem^ toolStripMenuItem2;
 	private: System::Windows::Forms::ToolStripButton^ ImportButton;
 	private: System::Windows::Forms::OpenFileDialog^ ImportBMPDialog;
+	private: System::Windows::Forms::SaveFileDialog^ SaveFileDialog;
+
 
 
 
@@ -145,6 +147,7 @@ namespace BitmapConverter {
 			this->toolStripMenuItem2 = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->toolStripButton1 = (gcnew System::Windows::Forms::ToolStripDropDownButton());
 			this->ImportBMPDialog = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->SaveFileDialog = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->MenuToolStrip->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->ImagePreviewBox))->BeginInit();
 			this->ImagePreviewHolder->SuspendLayout();
@@ -266,19 +269,22 @@ namespace BitmapConverter {
 			currentImageFilePath = selectedFilePath;
 		}
 	}
-	
-	private: System::Void ConvertButton_Click(System::Object^ sender, System::EventArgs^ e) 
+
+	private: System::Void ConvertButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
 		if (ImagePreviewBox->Image == nullptr) return;
-		
+
 		int lastIndex = currentImageFilePath->LastIndexOf("\\");
 		String^ filePathWithExtension = currentImageFilePath->Substring(lastIndex + 1);
 		String^ filePathWithoutExtension = Path::GetFileNameWithoutExtension(filePathWithExtension);
 
-		Console::WriteLine("Converting: " + filePathWithExtension);
-		Console::WriteLine("To: " + filePathWithoutExtension + ".h");
+		SaveFileDialog->FileName = filePathWithoutExtension + ".h";
+		SaveFileDialog->Filter = "Header Files (*.h) | *.h";
+		if(SaveFileDialog->ShowDialog() != System::Windows::Forms::DialogResult::OK) return;
 
-		ConvertBitmap(currentImageFilePath, filePathWithoutExtension);
+		System::String^ selectedOutputPath = SaveFileDialog->FileName;
+
+		ConvertBitmap(currentImageFilePath, selectedOutputPath, filePathWithoutExtension);
 	}
-};
+	};
 }

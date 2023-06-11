@@ -15,7 +15,7 @@ public ref struct Bitmap
     static StreamWriter^ outfile;
 };
 
-void ConvertBitmap(String^ filename, String^ outputFilename);
+void ConvertBitmap(String^ filename, String^ outputFilePath, String^ outputFilename);
 Bitmap^ ReadBitmap(String^ filename);
 void ConvertBitmapToCArray(Bitmap^ bitmap);
 void ConvertPaletteToCArray(Bitmap^ bitmap);
